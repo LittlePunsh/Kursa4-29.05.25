@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Загрузить сохранение - Witcher Keep</title>
+    <style>
+        body {
+            background-color: #1c1c1c;
+            color: #e0e0e0;
+            font-family: "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: #2a2a2a;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+        }
+
+        h1 {
+            color: #d4af37;
+            border-bottom: 1px solid #444;
+            padding-bottom: 8px;
+            margin-bottom: 25px;
+        }
+
+        p small {
+            color: #aaa;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #d4d4d4;
+        }
+
+        .form-group input[type="text"],
+        .form-group textarea,
+        .form-group select,
+        .form-group input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #555;
+            border-radius: 6px;
+            background-color: #3a3a3a;
+            color: #f0f0f0;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group textarea:focus,
+        .form-group select:focus,
+        .form-group input[type="file"]:focus {
+            border-color: #d4af37;
+            outline: none;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button[type="submit"] {
+            background-color: #d4af37;
+            color: #222;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #c49c2c;
+            transform: scale(1.02);
+        }
+
+        a {
+            color: #d4af37;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .success, .error {
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .success {
+            background-color: #2e5730;
+            color: #b4f5b8;
+            border: 1px solid #5aa65a;
+        }
+
+        .error {
+            background-color: #8b0000;
+            color: #fff;
+            border: 1px solid #c04848;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Загрузить новый файл сохранения</h1>
+
+    <div th:if="${successMessage}" class="success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="error" th:text="${errorMessage}"></div>
+
+    <form th:action="@{/admin/saves/upload}" method="post" enctype="multipart/form-data">
+
+        <div class="form-group">
+            <label for="file">Файл сохранения (.thewitchersave):</label>
+            <input type="file" id="file" name="file" required>
+        </div>
+
+        <div class="form-group">
+            <label for="configurationId">Связать с конфигурацией:</label>
+            <select id="configurationId" name="configurationId" required>
+                <option value="">-- Выберите конфигурацию --</option>
+                <option th:each="config : ${configurations}" th:value="${config.id}"
+                        th:text="${config.originatingGame.name + ' - ' + config.name}"></option>
+            </select>
+            <p><small>Выберите конфигурацию решений W1 (для W2) или W2 (для W3), которой соответствует этот файл.</small></p>
+        </div>
+
+        <div class="form-group">
+            <label for="targetGameId">Игра, для которой предназначено сохранение (цель импорта):</label>
+            <select id="targetGameId" name="targetGameId" required>
+                <option value="">-- Выберите игру --</option>
+                <option th:each="game : ${games}" th:value="${game.id}" th:text="${game.name}"></option>
+            </select>
+            <p><small>Это игра, которая будет импортировать этот файл (напр., The Witcher 2 или The Witcher 3).</small></p>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Описание файла:</label>
+            <textarea id="description" name="description" rows="3" placeholder="Напр. Сохранение для W2, Орден, Трисс, Доспехи да, Арондит да, Д'Иабль да"></textarea>
+        </div>
+
+        <button type="submit">Загрузить и связать</button>
+    </form>
+
+    <p><a th:href="@{/admin/saves}">← Назад к списку готовых сохранений</a></p>
+    <p><a th:href="@{/admin}">← Назад в админку</a></p>
+</div>
+</body>
+</html>

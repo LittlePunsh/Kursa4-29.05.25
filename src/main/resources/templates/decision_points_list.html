@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Решения Ведьмак - Точки в Главе</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #1a1a1a;
+            color: #ddd;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-header {
+            padding: 20px;
+            background-color: #2a2a2a;
+            color: #d4af37;
+        }
+
+        .page-header h1, .page-header h2 {
+            margin: 0 0 10px;
+        }
+
+        .status {
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            right: 0;
+            font-size: 0.85em;
+            font-weight: bold;
+            text-align: center;
+            padding: 2px 5px;
+            border-radius: 3px;
+            background-color: rgba(0,0,0,0.5);
+            color: white;
+        }
+
+        .status.made { color: lightgreen; }
+        .status.not-made { color: orange; }
+        .status.error { color: red; }
+
+        .decision-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            flex-grow: 1;
+            width: 100%;
+            height: 100%;
+            gap: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .square {
+            background-color: #333;
+            color: #ddd;
+            border: 2px solid #555;
+            border-radius: 8px;
+            text-align: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .square:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        }
+
+        .square a {
+            text-decoration: none;
+            color: inherit;
+            height: 100%;
+            width: 100%;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .square strong {
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        .square span.quest-name {
+            font-size: 0.8em;
+            color: #aaa;
+        }
+
+        .error { color: orange; }
+
+        .navigation-links {
+            padding: 15px;
+            font-size: 1em;
+        }
+
+        .navigation-links a {
+            color: #d4af37;
+            text-decoration: none;
+            margin-right: 15px;
+        }
+
+        .navigation-links a:hover {
+            text-decoration: underline;
+        }
+
+        .empty-message {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2em;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-header">
+    <h1>Решения для The Witcher <span th:text="${gameId}">1</span></h1>
+    <h2>Глава: <span th:text="${chapterName}">Название Главы</span></h2>
+</div>
+
+<div th:if="${decisionPoints == null or decisionPoints.isEmpty()}" class="empty-message">
+    В этой главе пока нет решений.
+</div>
+
+<div th:if="${decisionPoints != null and !decisionPoints.isEmpty()}" class="decision-grid">
+    <div th:each="point, iterStat : ${decisionPoints}"
+         th:if="${iterStat.index < 6}"
+         class="square">
+        <div th:if="${point != null}">
+            <a th:href="@{/user/decisions/point/__${point.id}__}">
+                <strong th:text="${point.description ?: 'Описание недоступно'}">Описание точки решения</strong>
+                <span class="quest-name" th:text="${point.questName}">Имя Квеста</span>
+            </a>
+            <span th:if="${userMadeDecisionPointIds != null and userMadeDecisionPointIds.contains(point.id)}" class="status made">Решение принято</span>
+            <span th:unless="${userMadeDecisionPointIds != null and userMadeDecisionPointIds.contains(point.id)}" class="status not-made">Решение не принято</span>
+            <span th:if="${point.description == null}" class="status error">Ошибка данных</span>
+        </div>
+        <div th:unless="${point != null}">
+            <span class="status error">Некорректная точка</span>
+        </div>
+    </div>
+</div>
+
+<div class="navigation-links">
+    <a th:href="@{/user/decisions/__${gameId}__}">Вернуться к списку Глав</a>
+
+</div>
+
+</body>
+</html>

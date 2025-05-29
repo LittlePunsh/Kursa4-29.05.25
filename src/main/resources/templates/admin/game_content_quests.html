@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${'Квесты в ' + chapterName + ' - ' + game.name}"></title>
+    <style>
+        body {
+            background-color: #1c1c1c;
+            color: #e0e0e0;
+            font-family: "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            background-color: #2a2a2a;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+            text-align: center;
+        }
+
+        h1, h2, h3 {
+            color: #d4af37;
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin: 20px 0;
+        }
+
+        .square {
+            display: inline-block;
+            width: 180px;
+            height: 180px;
+            margin: 12px;
+            background-color: #333;
+            color: #e0e0e0;
+            border: 2px solid #555;
+            border-radius: 12px;
+            text-align: center;
+            vertical-align: top;
+            transition: transform 0.2s ease, border-color 0.3s ease;
+        }
+
+        .square:hover {
+            transform: scale(1.05);
+            border-color: #d4af37;
+        }
+
+        .square a {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+            height: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            word-break: break-word;
+        }
+
+        .square a strong {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #d4af37;
+        }
+
+        a {
+            color: #d4af37;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 th:text="${'Контент игры: ' + game.name}">Контент игры: The Witcher</h1>
+    <h2>Глава: <span th:text="${chapterName}">Название Главы</span></h2>
+    <h3>Квесты с решениями:</h3>
+
+    <div th:if="${questNames == null or questNames.isEmpty()}">
+        <p>В этой главе пока нет доступных Квестов с решениями.</p>
+    </div>
+
+    <div th:each="questName : ${questNames}" class="square">
+        <a th:href="@{/admin/games/__${game.id}__/content/chapter/__${chapterName}__/quest/__${questName}__}">
+            <strong th:text="${questName}">Название Квеста</strong>
+        </a>
+    </div>
+
+    <p><a th:href="@{/admin/games/__${game.id}__/content/chapter/__${chapterName}__}">← Назад к списку Глав</a></p>
+    <p><a th:href="@{/admin/games}">← Назад к списку игр</a></p>
+    <p><a th:href="@{/admin}">← Назад в админку</a></p>
+</div>
+</body>
+</html>

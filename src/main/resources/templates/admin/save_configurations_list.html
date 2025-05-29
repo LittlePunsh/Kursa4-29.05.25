@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Список конфигураций сохранений - Witcher Keep</title>
+    <style>
+        .success, .error {
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .success {
+            background-color: #2e5730;
+            color: #b4f5b8;
+            border: 1px solid #5aa65a;
+        }
+
+        .error {
+            background-color: #5a1c1c;
+            color: #ffbaba;
+            border: 1px solid #c04848;
+        }
+
+        .edit-button, .delete-button {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            margin-right: 8px;
+            text-decoration: none;
+            transition: background-color 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .edit-button {
+            background-color: #3a3f2a;
+            color: #cddc39;
+            border: 1px solid #5c6b2f;
+        }
+
+        .edit-button:hover {
+            background-color: #4f5633;
+        }
+
+        .delete-button {
+            background-color: #532626;
+            color: #ff8888;
+            border: 1px solid #884444;
+        }
+
+        .delete-button:hover {
+            background-color: #7a2d2d;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Список конфигураций сохранений</h1>
+
+    <div th:if="${successMessage}" class="success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="error" th:text="${errorMessage}"></div>
+
+    <div th:if="${configurations == null or configurations.isEmpty()}">
+        <p>В системе пока нет конфигураций сохранений.</p>
+    </div>
+
+    <div th:unless="${configurations == null or configurations.isEmpty()}">
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Название</th>
+                <th>Игра-источник</th>
+                <th>Описание</th>
+                <th>Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="config : ${configurations}">
+                <td th:text="${config.id}">1</td>
+                <td th:text="${config.name}">W1_CONFIG_...</td>
+                <td th:text="${config.originatingGame.name}">The Witcher</td>
+                <td th:text="${config.description}">Configuration derived from: ...</td>
+                <td class="table-actions">
+                    <a th:href="@{/admin/configs/__${config.id}__}">Детали</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <p><a th:href="@{/admin}">← Назад в админку</a></p>
+</div>
+</body>
+</html>

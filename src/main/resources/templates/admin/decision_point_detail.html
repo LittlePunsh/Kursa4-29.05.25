@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${'Точка решения: ' + point.description}"></title>
+    <style>
+        body {
+            background-color: #1c1c1c;
+            color: #e0e0e0;
+            font-family: "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            background-color: #2a2a2a;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+        }
+
+        h1, h2, h3 {
+            color: #d4af37;
+            border-bottom: 1px solid #444;
+            padding-bottom: 5px;
+        }
+
+        p {
+            margin: 10px 0;
+        }
+
+        strong {
+            color: #f0f0f0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .data-table th, .data-table td {
+            padding: 14px;
+            border: 1px solid #444;
+            text-align: left;
+        }
+
+        .data-table th {
+            background-color: #333;
+            color: #d4af37;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table tbody tr:nth-child(even) {
+            background-color: #2b2b2b;
+        }
+
+        .data-table tbody tr:nth-child(odd) {
+            background-color: #242424;
+        }
+
+        .data-table a {
+            color: #7ec8e3;
+            text-decoration: none;
+        }
+
+        .data-table a:hover {
+            text-decoration: underline;
+        }
+
+        .table-actions a, .table-actions button {
+            margin-right: 12px;
+            font-size: 0.9em;
+        }
+
+        .table-actions button {
+            background-color: #e74c3c;
+            color: #fff;
+            padding: 6px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .table-actions button:hover {
+            background-color: #c0392b;
+        }
+
+        a {
+            color: #ffcc66;
+        }
+
+        a:hover {
+            color: #ffd580;
+            text-decoration: underline;
+        }
+
+        .success {
+            background-color: #2e7d32;
+            color: #dff0d8;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .error {
+            background-color: #c62828;
+            color: #fbe9e7;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .future-features-note {
+            font-size: 0.85em;
+            color: #aaa;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .data-table th, .data-table td {
+                font-size: 0.85em;
+                padding: 10px;
+            }
+
+            .table-actions a, .table-actions button {
+                display: block;
+                margin-bottom: 8px;
+            }
+        }
+    </style>
+
+</head>
+<body>
+<div class="container">
+    <h1>Детали точки решения</h1>
+
+    <div th:if="${successMessage}" class="success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="error" th:text="${errorMessage}"></div>
+
+    <h2><span th:text="${point.description}">Описание точки решения</span></h2>
+
+    <p><strong>ID:</strong> <span th:text="${point.id}"></span></p>
+    <p><strong>Идентификатор:</strong> <span th:text="${point.identifier}"></span></p>
+    <p><strong>Игра:</strong> <span th:text="${game.name}"></span></p>
+    <p><strong>Тип:</strong> <span th:text="${decisionType.name}"></span></p>
+    <p><strong>Глава:</strong> <span th:text="${point.chapterName}"></span></p>
+    <p><strong>Квест:</strong> <span th:text="${point.questName}"></span></p>
+    <p><strong>Порядок:</strong> <span th:text="${point.orderInGame}"></span></p>
+
+    <h3>Варианты выбора</h3>
+
+    <div th:if="${point.choices == null or point.choices.isEmpty()}">
+        <p>Для этой точки решения пока нет вариантов выбора.</p>
+    </div>
+
+    <div th:unless="${point.choices == null or point.choices.isEmpty()}">
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Идентификатор</th>
+                <th>Описание выбора</th>
+                <th>Последствия</th>
+                <th>Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="choice : ${point.choices}">
+                <td th:text="${choice.id}">1</td>
+                <td th:text="${choice.identifier}">CHOOSE_TRISS</td>
+                <td th:text="${choice.description}">Выбрать Трисс</td>
+                <td th:text="${choice.consequenceText}">В The Witcher 2 ничего не изменится.</td>
+                <td class="table-actions">
+                    <!-- ДОБАВЛЕНА ССЫЛКА НА РЕДАКТИРОВАНИЕ -->
+                    <a th:href="@{/admin/choices/__${choice.id}__/edit}">Редактировать</a>
+                    <!-- ФОРМА ДЛЯ УДАЛЕНИЯ ВАРИАНТА ВЫБОРА -->
+                    <form th:action="@{/admin/choices/__${choice.id}__/delete}"
+                          method="post"
+                          style="display:inline;"
+                          class="delete-form">
+
+                        <button type="submit">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <p><a th:href="@{/admin/games/__${game.id}__/content/chapter/__${point.chapterName}__/quest/__${point.questName}__}">← Назад к списку решений в этом квесте</a></p>
+    <p><a th:href="@{/admin/games/__${game.id}__/content/chapter/__${point.chapterName}__}">← Назад к списку Квестов</a></p>
+    <p><a th:href="@{/admin/games/__${game.id}__/content}">← Назад к списку Глав</a></p>
+    <p><a th:href="@{/admin/games}">← Назад к списку игр</a></p>
+    <p><a th:href="@{/admin}">← Назад в админку</a></p>
+</div>
+
+<script>
+    document.querySelectorAll('.delete-form').forEach(form => {
+        form.addEventListener('submit', function (e) {
+            const row = form.closest('tr'); // Находим строку таблицы
+            const identifierCell = row.querySelector('td:nth-child(2)');
+            const choiceIdentifier = identifierCell ? identifierCell.textContent : 'этот вариант';
+
+            if (!confirm(`Вы уверены, что хотите удалить вариант выбора '${choiceIdentifier}'? Это также удалит все связанные решения пользователей для этого варианта!`)) {
+                e.preventDefault();
+            }
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Решения Ведьмак - Выбор Главы</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #1a1a1a;
+            color: #ddd;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-header {
+            padding: 20px;
+            background-color: #2a2a2a;
+            color: #d4af37;
+        }
+
+        .page-header h1, .page-header h2 {
+            margin: 0 0 10px;
+        }
+
+        /* Фиксированная 3x2 сетка */
+        .chapters-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            flex-grow: 1;
+            width: 100%;
+            height: 100%;
+            gap: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .square {
+            background-color: #333;
+            color: #ddd;
+            border: 2px solid #555;
+            border-radius: 8px;
+            text-align: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .square:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        }
+
+        .square a {
+            text-decoration: none;
+            color: inherit;
+            height: 100%;
+            width: 100%;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .square strong {
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        .square a span {
+            display: block;
+        }
+
+        /* Сообщение, если нет глав */
+        .no-chapters {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2em;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-header">
+    <div>
+        <h1>The Witcher</h1>
+        <h2>Выберите Главу:</h2>
+    </div>
+</div>
+
+<div th:if="${chapterNames == null or chapterNames.isEmpty()}" class="no-chapters">
+    <p>Для этой игры пока нет доступных Глав с решениями.</p>
+</div>
+
+
+
+<div class="chapters-grid" th:if="${chapterNames != null and !chapterNames.isEmpty()}">
+    <div th:each="chapterName, iterStat : ${chapterNames}"
+         th:if="${iterStat.index < 6}"
+         class="square">
+        <a th:href="@{/user/decisions/__${gameId}__/chapter/__${chapterName}__}">
+            <span th:text="${chapterName}">Название Главы</span>
+        </a>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Управление пользователем - Witcher Keep</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .user-decisions-list {
+            margin-top: 40px;
+            padding: 20px;
+            border: 1px solid #444;
+            background-color: #1c1c1c;
+            border-radius: 8px;
+            color: #eee;
+        }
+
+        .user-decisions-list h3 {
+            font-size: 1.4em;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #666;
+            padding-bottom: 10px;
+        }
+
+        .user-decisions-list ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .user-decisions-list li {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #2b2b2b;
+            border-left: 4px solid #888;
+            border-radius: 6px;
+        }
+
+        .user-decisions-list li strong {
+            color: #f0a500;
+        }
+
+        .user-decisions-list span {
+            display: inline-block;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Управление пользователем: <span th:text="${user.username}"></span></h1>
+
+    <div th:if="${successMessage}" class="success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="error" th:text="${errorMessage}"></div>
+
+    <p>ID: <span th:text="${user.id}"></span></p>
+    <p>Email: <span th:text="${user.email}"></span></p>
+    <p>Дата регистрации: <span th:text="${#temporals.format(user.createdAt, 'yyyy-MM-dd HH:mm')}"></span></p>
+
+    <h2>Управление ролями</h2>
+    <form th:action="@{'/admin/users/' + ${user.id} + '/roles'}" method="post">
+        <div class="form-group">
+            <label>Выберите роли:</label>
+            <div th:each="role : ${allRoles}">
+                <input type="checkbox" th:id="${'role' + role.id}" name="roleIds" th:value="${role.id}" th:checked="${userRoles.contains(role)}">
+                <label th:for="${'role' + role.id}" th:text="${role.name}"></label>
+            </div>
+        </div>
+        <button type="submit">Обновить роли</button>
+    </form>
+
+    <p><a th:href="@{/admin/users}">← Назад к списку пользователей</a></p>
+    <p><a th:href="@{/admin}">← Назад в админку</a></p>
+
+    <div class="user-decisions-list">
+        <h3>Решения пользователя (<span th:text="${userDecisions != null ? userDecisions.size() : 0}">0</span>)</h3>
+        <div th:if="${userDecisions == null or userDecisions.isEmpty()}">
+            <p>У этого пользователя пока нет сохраненных решений.</p>
+        </div>
+        <div th:unless="${userDecisions == null or userDecisions.isEmpty()}">
+            <ul>
+                <li th:each="userDecision : ${userDecisions}">
+                    <strong>
+                        <span th:text="${userDecision.decisionPoint.game.name + ' – ' + userDecision.decisionPoint.chapterName + ' – ' + userDecision.decisionPoint.questName}">Игра – Глава – Квест</span>
+                    </strong><br>
+                    <span th:text="${userDecision.decisionPoint.description}">Описание точки решения</span><br>
+                    → Выбор: <strong><span th:text="${userDecision.chosenChoice.description}">Выбранный вариант</span></strong><br>
+                    <em><span th:text="${#temporals.format(userDecision.createdAt, 'yyyy-MM-dd HH:mm')}">Дата и время</span></em>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

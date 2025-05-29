@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${'Редактировать точку: ' + decisionPoint.description}"></title>
+    <style>
+        body {
+            background-color: #1c1c1c;
+            color: #e0e0e0;
+            font-family: "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background-color: #2a2a2a;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+        }
+
+        h1, h2 {
+            color: #d4af37;
+            border-bottom: 1px solid #444;
+            padding-bottom: 8px;
+            margin-bottom: 25px;
+        }
+
+        p {
+            margin: 12px 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #d4d4d4;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #555;
+            border-radius: 6px;
+            background-color: #3a3a3a;
+            color: #f0f0f0;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: #d4af37;
+            outline: none;
+        }
+
+        button[type="submit"] {
+            background-color: #d4af37;
+            color: #222;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #c49c2c;
+            transform: scale(1.02);
+        }
+
+        a {
+            color: #d4af37;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .error {
+            background-color: #8b0000;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            color: #fff;
+            font-weight: bold;
+        }
+    </style>
+
+</head>
+<body>
+<div class="container">
+    <h1>Редактировать точку решения</h1>
+    <h2><span th:text="${decisionPoint.description}">Текущее описание...</span> (ID: <span th:text="${decisionPoint.id}"></span>)</h2>
+
+
+    <div th:if="${errorMessage}" class="error" th:text="${errorMessage}"></div>
+
+    <form th:action="@{/admin/points/__${decisionPoint.id}__/edit}" method="post" th:object="${decisionPoint}">
+
+        <input type="hidden" th:field="*{id}" />
+
+        <div class="form-group">
+            <label for="gameId">Игра:</label>
+            <select id="gameId" name="gameId" required>
+                <option value="">-- Выберите игру --</option>
+                <option th:each="game : ${games}" th:value="${game.id}" th:text="${game.name}"
+                        th:selected="${decisionPoint.game != null and game.id == decisionPoint.game.id}">The Witcher</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="decisionTypeId">Тип решения:</label>
+            <select id="decisionTypeId" name="decisionTypeId" required>
+                <option value="">-- Выберите тип --</option>
+                <option th:each="type : ${decisionTypes}" th:value="${type.id}" th:text="${type.name}"
+                        th:selected="${decisionPoint.decisionType != null and type.id == decisionPoint.decisionType.id}"></option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="chapterName">Глава:</label>
+            <input type="text" id="chapterName" name="chapterName" th:field="*{chapterName}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="questName">Квест:</label>
+            <input type="text" id="questName" name="questName" th:field="*{questName}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="identifier">Идентификатор (Code):</label>
+            <input type="text" id="identifier" name="identifier" th:field="*{identifier}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Описание точки решения:</label>
+            <textarea id="description" name="description" th:field="*{description}" rows="4" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="orderInGame">Порядок в игре:</label>
+            <input type="number" id="orderInGame" name="orderInGame" th:field="*{orderInGame}">
+        </div>
+
+
+        <button type="submit">Сохранить изменения</button>
+    </form>
+
+    <p><a th:href="@{/admin/points/__${decisionPoint.id}__/detail}">← Назад к деталям точки решения</a></p>
+    <p><a th:href="@{/admin}">← Назад в админку</a></p>
+</div>
+</body>
+</html>

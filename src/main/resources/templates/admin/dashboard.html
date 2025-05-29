@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <title>Админ-панель - Witcher Keep</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container">
+    <h1>Админ-панель</h1>
+
+    <h2>Статистика</h2>
+    <p>Это базовые счетчики сущностей в базе данных.</p>
+    <ul>
+        <li>Всего пользователей: <span th:text="${userCount}">0</span></li>
+        <li>Всего игр: <span th:text="${gameCount}">0</span></li>
+        <li>Всего точек решений: <span th:text="${decisionPointCount}">0</span></li>
+        <li>Всего готовых сохранений: <span th:text="${premadeSaveCount}">0</span></li>
+        <li>Всего конфигураций сохранений: <span th:text="${saveConfigurationCount}">0</span></li>
+    </ul>
+
+    <h2>Управление</h2>
+    <p>Перейдите в соответствующий раздел для управления:</p>
+    <ul>
+        <li><a th:href="@{/admin/users}">Управление пользователями</a></li>
+        <li><a th:href="@{/admin/games}">Управление игровым контентом (решениями)</a></li>
+        <li><a th:href="@{/admin/saves}">Управление готовыми сохранениями (.thewitchersave)</a></li>
+    </ul>
+
+    <p><a th:href="@{/user}">← Вернуться на страницу пользователя</a></p>
+
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Выйти из админки</button>
+    </form>
+</div>
+</body>
+</html>

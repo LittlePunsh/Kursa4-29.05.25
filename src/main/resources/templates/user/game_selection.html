@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Выберите игру - Witcher Keep</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .square { display: inline-block;
+            width: 180px;
+            height: 180px;
+            margin: 10px;
+            background-color: #333;
+            color: #ddd;
+            border: 2px solid #555;
+            border-radius: 8px;
+            text-align: center;
+            vertical-align: top; }
+        .square a { display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+            height: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            word-break: break-word; }
+        .square a strong { display: block;
+            margin-bottom: 5px;
+            font-size: 1.2em; }
+        .square .year { font-size: 0.9em;
+            color: #aaa; }
+
+        h1, h2 { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Выберите игру</h1>
+    <h2>Начните или продолжите отслеживание решений для серии Ведьмака</h2>
+
+    <div th:if="${games == null or games.isEmpty()}">
+        <p>В системе пока нет доступных игр.</p>
+    </div>
+
+    <div th:each="game : ${games}" class="square">
+        <a th:href="@{/user/decisions/__${game.id}__}">
+            <strong th:text="${game.name}">Название Игры</strong>
+            <span class="year" th:text="${'(' + game.releaseYear + ')'}"> (Год)</span>
+        </a>
+    </div>
+
+    <p><a th:href="@{/logout}">Выйти</a></p>
+
+</div>
+</body>
+</html>
